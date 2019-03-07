@@ -13,8 +13,8 @@ public class MainActivity extends AppCompatActivity {
 
     DataBaseHelper peopleDB;
 
-    Button btnAddData,btnViewData;
-    EditText etName,etEmail,etTvShow;
+    Button btnAddData,btnViewData,btnUpdateData,btnDelete;
+    EditText etName,etEmail,etTvShow,etID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +27,15 @@ public class MainActivity extends AppCompatActivity {
 
         btnAddData=(Button)findViewById(R.id.btnAddData);
         btnViewData=(Button)findViewById(R.id.btnViewData);
+        btnUpdateData = (Button) findViewById(R.id.btnUpdateData);
+        etID = (EditText) findViewById(R.id.etID);
+        btnDelete = (Button) findViewById(R.id.btnDelete);
+
 
         AddData();
         ViewData();
+        UpdateData();
+        DeleteData();
 
     }
 
@@ -70,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
                 StringBuffer buffer=new StringBuffer();
                 while (data.moveToNext()){
                     buffer.append("ID: " + data.getString(0) + "\n");
-                    buffer.append("Favorite Tv show: " + data.getString(1) + "\n");
-                    buffer.append("Email: " + data.getString(2) + "\n");
-                    buffer.append("Name: " + data.getString(3) + "\n");
+                    buffer.append("salon " + data.getString(1) + "\n");
+                    buffer.append("sede: " + data.getString(2) + "\n");
+                    buffer.append("edificio: " + data.getString(3) + "\n");
                     display("all stored data", buffer.toString());
 
                 }
@@ -90,6 +96,44 @@ public class MainActivity extends AppCompatActivity {
      builder.show();
 
  }
+    public void UpdateData(){
+        btnUpdateData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int temp = etID.getText().toString().length();
+                if (temp > 0) {
+                    boolean update = peopleDB.updateData(etID.getText().toString(), etName.getText().toString(),
+                            etEmail.getText().toString(), etTvShow.getText().toString());
+                    if (update == true) {
+                        Toast.makeText(MainActivity.this, "Successfully Updated Data!", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Something Went Wrong :(.", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "You Must Enter An ID to Update :(.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+    public void DeleteData(){
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int temp = etID.getText().toString().length();
+                if(temp > 0){
+                    Integer deleteRow = peopleDB.deleteData(etID.getText().toString());
+                    if(deleteRow > 0){
+                        Toast.makeText(MainActivity.this, "Successfully Deleted The Data!", Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(MainActivity.this, "Something went wrong :(.", Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Toast.makeText(MainActivity.this, "You Must Enter An ID to Delete :(.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
 
 
 }
